@@ -1,0 +1,41 @@
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+
+class Program
+{
+    static readonly HttpClient client = new HttpClient();
+
+    static async Task Main(string[] args)
+    {
+        Console.WriteLine("Select searching system: 1 - Google, 2 - Bing");
+        string choice = Console.ReadLine();
+        string baseUrl;
+        switch (choice)
+        {
+          case "1":
+            baseUrl = "https://www.google.com/search?q=";
+          break;
+          case "2":
+            baseUrl = "https://www.bing.com/search?q=";
+          break;
+          default:
+            baseUrl = "Invalid choice";
+          break;
+        }
+
+
+        Console.WriteLine("Enter a search query:");
+        string query = Console.ReadLine();
+        string url = baseUrl + Uri.EscapeDataString(query);
+
+        HttpResponseMessage response = await client.GetAsync(url);
+
+        if (response.IsSuccessStatusCode)
+        {
+            string responseBody = await response.Content.ReadAsStringAsync();
+            Console.WriteLine(responseBody);
+        }
+        else Console.WriteLine($"Error: {response.StatusCode}");
+    }
+}
